@@ -1,7 +1,8 @@
 import sys as _sys
 import typing as _typing
 
-from . import _status
+from . import _main, _status
+from ._main import Unit
 from ._status import (
     ActiveStatus,
     BlockedStatus,
@@ -16,6 +17,14 @@ class _ThisModule(_sys.modules[__name__].__class__):
 
     https://stackoverflow.com/a/34829743
     """
+
+    @property
+    def unit(self):
+        return _main.unit()
+
+    @property
+    def app(self):
+        return _main.app()
 
     @property
     def unit_status(self):
@@ -35,10 +44,12 @@ class _ThisModule(_sys.modules[__name__].__class__):
 
 
 # TODO: add docstrings
-unit_status: _typing.Optional[Status]
+unit: Unit
 """example docstring"""
-# TODO: document that if you set + get unit status you won't see unit status you set (not the case for app status)
 
+app: str
+# TODO: document that if you set + get unit status you won't see unit status you set (not the case for app status)
+unit_status: _typing.Optional[Status]
 app_status: _typing.Optional[Status]
 
 _sys.modules[__name__].__class__ = _ThisModule
