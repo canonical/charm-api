@@ -42,6 +42,10 @@ class _ThisModule(_sys.modules[__name__].__class__):
     def app_status(self, value: Status):
         _status.set_(value, app=True)
 
+    @property
+    def is_leader(self):
+        return _main.is_leader()
+
 
 # TODO: add docstrings
 unit: Unit
@@ -51,5 +55,6 @@ app: str
 # TODO: document that if you set + get unit status you won't see unit status you set (not the case for app status)
 unit_status: _typing.Optional[Status]
 app_status: _typing.Optional[Status]
+is_leader: bool
 
 _sys.modules[__name__].__class__ = _ThisModule

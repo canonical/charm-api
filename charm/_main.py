@@ -1,4 +1,6 @@
+import json
 import os
+import subprocess
 
 
 class Unit(str):
@@ -69,3 +71,14 @@ def unit():
 
 def app():
     return unit().app
+
+
+def is_leader() -> bool:
+    return json.loads(
+        subprocess.run(
+            ["is-leader", "--format", "json"],
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout
+    )
