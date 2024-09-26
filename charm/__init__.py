@@ -2,7 +2,7 @@ import sys as _sys
 import typing as _typing
 
 from . import _main, _status
-from ._main import Unit
+from ._main import Endpoint, Relation, Unit
 from ._status import (
     ActiveStatus,
     BlockedStatus,
