@@ -1,3 +1,4 @@
+import collections.abc
 import json
 import os
 import subprocess
@@ -360,6 +361,77 @@ class UpgradeCharmEvent(Event):
     pass
 
 
+_ActionResult = typing.Mapping[str, typing.Union[str, "_ActionResult"]]
+
+
+class ActionEvent(Event):
+    @property
+    def action(self) -> str:
+        return os.environ["JUJU_ACTION_NAME"]
+
+    @property
+    def parameters(self) -> collections.abc.Mapping:
+        return types.MappingProxyType(
+            json.loads(
+                subprocess.run(
+                    ["action-get", "--format", "json"],
+                    capture_output=True,
+                    check=True,
+                    text=True,
+                ).stdout
+            )
+        )
+
+    @staticmethod
+    def log(message: str, /):
+        subprocess.run(["action-log", message], check=True)
+
+    @classmethod
+    def _flatten(
+        cls, old: _ActionResult, *, prefix: str = ""
+    ) -> typing.Mapping[str, str]:
+        new = {}
+        for key, value in old.items():
+            if not isinstance(key, str):
+                raise TypeError(
+                    f"expected key with type 'str', got '{type(key).__name__}': {repr(key)}"
+                )
+            for invalid_character in (".", "="):
+                if invalid_character in key:
+                    raise ValueError(
+                        f'"{invalid_character}" character not allowed in key: "{key}"'
+                    )
+            if prefix:
+                key = f"{prefix}.{key}"
+            if isinstance(value, collections.abc.Mapping):
+                new.update(cls._flatten(value, prefix=key))
+            elif isinstance(value, str):
+                new[key] = value
+            else:
+                raise TypeError(
+                    f"expected value with type 'str' or 'collections.abc.Mapping', got '{type(value).__name__}': {repr(value)}"
+                )
+        return new
+
+    def _set_result(self, value: _ActionResult, /):
+        # TODO docstring: add note about how values are merged if called multiple times
+        # TODO docstring: "." and "=" characters not allowed in keys (and other hook tool restrictions)
+        # TODO: character limit of shell?
+        command = ["action-set"]
+        for key, value_ in self._flatten(value).items():
+            command.append(f"{key}={value_}")
+        subprocess.run(command, check=True)
+
+    result = property(fset=_set_result)
+
+    @staticmethod
+    def fail(message: str = None, /):
+        command = ["action-fail"]
+        if message is not None:
+            command.append(message)
+        subprocess.run(command, check=True)
+
+
 class RelationEvent(Event):
     @property
     def relation(self) -> Relation:
@@ -429,9 +501,8 @@ def is_leader() -> bool:
 
 
 def event() -> Event:
-    if action_name := os.environ.get("JUJU_ACTION_NAME"):
-        # TODO: add action event
-        return _UnknownEvent()
+    if os.environ.get("JUJU_ACTION_NAME"):
+        return ActionEvent()
     name = os.environ["JUJU_HOOK_NAME"]
     try:
         return _STATICALLY_NAMED_EVENT_TYPES[name]()

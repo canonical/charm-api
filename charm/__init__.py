@@ -3,6 +3,7 @@ import typing as _typing
 
 from . import _main, _status
 from ._main import (
+    ActionEvent,
     ConfigChangedEvent,
     Endpoint,
     Event,
