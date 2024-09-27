@@ -268,6 +268,48 @@ class Endpoint(typing.Collection[Relation]):
             return relation
 
 
+# Do not expose this class publicly (i.e. in top-level __init__.py)
+class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
+    # TODO: add support for secrets
+    def __repr__(self):
+        return f"{type(self).__name__}()"
+
+    def __getitem__(self, key: str):
+        result = json.loads(
+            subprocess.run(
+                ["config-get", "--format", "json", key],
+                capture_output=True,
+                check=True,
+                text=True,
+            ).stdout
+        )
+        if result is None:
+            raise KeyError(key)
+        return result
+
+    def __iter__(self):
+        result: typing.Dict[str, typing.Union[str, int, float, bool]] = json.loads(
+            subprocess.run(
+                ["config-get", "--format", "json"],
+                capture_output=True,
+                check=True,
+                text=True,
+            ).stdout
+        )
+        return iter(result.keys())
+
+    def __len__(self):
+        result: typing.Dict[str, typing.Union[str, int, float, bool]] = json.loads(
+            subprocess.run(
+                ["config-get", "--format", "json"],
+                capture_output=True,
+                check=True,
+                text=True,
+            ).stdout
+        )
+        return len(result)
+
+
 def unit():
     return Unit(os.environ["JUJU_UNIT_NAME"])
 

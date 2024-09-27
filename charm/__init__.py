@@ -46,6 +46,10 @@ class _ThisModule(_sys.modules[__name__].__class__):
     def is_leader(self):
         return _main.is_leader()
 
+    @property
+    def config(self):
+        return _main.Config()
+
 
 # TODO: add docstrings
 unit: Unit
@@ -56,5 +60,6 @@ app: str
 unit_status: _typing.Optional[Status]
 app_status: _typing.Optional[Status]
 is_leader: bool
+config: _typing.Mapping[str, _typing.Union[str, int, float, bool]]
 
 _sys.modules[__name__].__class__ = _ThisModule
