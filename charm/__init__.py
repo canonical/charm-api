@@ -2,7 +2,29 @@ import sys as _sys
 import typing as _typing
 
 from . import _main, _status
-from ._main import Endpoint, Relation, Unit
+from ._main import (
+    ConfigChangedEvent,
+    Endpoint,
+    Event,
+    InstallEvent,
+    LeaderElectedEvent,
+    LeaderSettingsChangedEvent,
+    PostSeriesUpgradeEvent,
+    PreSeriesUpgradeEvent,
+    Relation,
+    RelationBrokenEvent,
+    RelationChangedEvent,
+    RelationCreatedEvent,
+    RelationDepartedEvent,
+    RelationEvent,
+    RelationJoinedEvent,
+    RemoveEvent,
+    StartEvent,
+    StopEvent,
+    Unit,
+    UpdateStatusEvent,
+    UpgradeCharmEvent,
+)
 from ._status import (
     ActiveStatus,
     BlockedStatus,
@@ -50,6 +72,10 @@ class _ThisModule(_sys.modules[__name__].__class__):
     def config(self):
         return _main.Config()
 
+    @property
+    def event(self):
+        return _main.event()
+
 
 # TODO: add docstrings
 unit: Unit
@@ -61,5 +87,6 @@ unit_status: _typing.Optional[Status]
 app_status: _typing.Optional[Status]
 is_leader: bool
 config: _typing.Mapping[str, _typing.Union[str, int, float, bool]]
+event: Event
 
 _sys.modules[__name__].__class__ = _ThisModule

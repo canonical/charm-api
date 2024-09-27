@@ -310,6 +310,105 @@ class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
         return len(result)
 
 
+# TODO: add pebble, secret, and storage events
+class Event:
+    def __repr__(self):
+        return f"{type(self).__name__}()"
+
+
+class ConfigChangedEvent(Event):
+    pass
+
+
+class InstallEvent(Event):
+    pass
+
+
+class LeaderElectedEvent(Event):
+    pass
+
+
+class LeaderSettingsChangedEvent(Event):
+    pass
+
+
+class PostSeriesUpgradeEvent(Event):
+    pass
+
+
+class PreSeriesUpgradeEvent(Event):
+    pass
+
+
+class RemoveEvent(Event):
+    pass
+
+
+class StartEvent(Event):
+    pass
+
+
+class StopEvent(Event):
+    pass
+
+
+class UpdateStatusEvent(Event):
+    pass
+
+
+class UpgradeCharmEvent(Event):
+    pass
+
+
+class RelationEvent(Event):
+    @property
+    def relation(self) -> Relation:
+        # Example: "database:5"
+        id_ = os.environ["JUJU_RELATION_ID"]
+        # Example: 5
+        id_ = int(id_.removeprefix(f'{os.environ["JUJU_RELATION"]}:'))
+        return Relation(id_)
+
+    @property
+    def endpoint(self) -> Endpoint:
+        return Endpoint(os.environ["JUJU_RELATION"])
+
+
+class RelationBrokenEvent(RelationEvent):
+    pass
+
+
+class RelationCreatedEvent(RelationEvent):
+    pass
+
+
+class _RelationUnitEvent(RelationEvent):
+    @property
+    def remote_unit(self) -> Unit:
+        return Unit(os.environ["JUJU_REMOTE_UNIT"])
+
+
+class RelationChangedEvent(_RelationUnitEvent):
+    pass
+
+
+class RelationDepartedEvent(_RelationUnitEvent):
+    @property
+    def departing_unit(self) -> Unit:
+        return Unit(os.environ["JUJU_DEPARTING_UNIT"])
+
+
+class RelationJoinedEvent(_RelationUnitEvent):
+    pass
+
+
+class _UnknownEvent(Event):
+    """Temporary placeholder while not all Juju events are implemented
+
+    (e.g. pebble, secret, and storage events)
+    """
+
+
 def unit():
     return Unit(os.environ["JUJU_UNIT_NAME"])
 
@@ -327,3 +426,41 @@ def is_leader() -> bool:
             text=True,
         ).stdout
     )
+
+
+def event() -> Event:
+    if action_name := os.environ.get("JUJU_ACTION_NAME"):
+        # TODO: add action event
+        return _UnknownEvent()
+    name = os.environ["JUJU_HOOK_NAME"]
+    try:
+        return _STATICALLY_NAMED_EVENT_TYPES[name]()
+    except KeyError:
+        pass
+    for suffix, type_ in _DYNAMICALLY_NAMED_EVENT_TYPES.items():
+        if name.endswith(suffix):
+            return type_()
+    # TODO: add pebble, secret, and storage events
+    return _UnknownEvent()
+
+
+_STATICALLY_NAMED_EVENT_TYPES: typing.Dict[str, typing.Type[Event]] = {
+    "config-changed": ConfigChangedEvent,
+    "install": InstallEvent,
+    "leader-elected": LeaderElectedEvent,
+    "leader-settings-changed": LeaderSettingsChangedEvent,
+    "post-series-upgrade": PostSeriesUpgradeEvent,
+    "pre-series-upgrade": PreSeriesUpgradeEvent,
+    "remove": RemoveEvent,
+    "start": StartEvent,
+    "stop": StopEvent,
+    "update-status": UpdateStatusEvent,
+    "upgrade-charm": UpgradeCharmEvent,
+}
+_DYNAMICALLY_NAMED_EVENT_TYPES: typing.Dict[str, typing.Type[Event]] = {
+    "-relation-broken": RelationBrokenEvent,
+    "-relation-changed": RelationChangedEvent,
+    "-relation-created": RelationCreatedEvent,
+    "-relation-departed": RelationDepartedEvent,
+    "-relation-joined": RelationJoinedEvent,
+}
