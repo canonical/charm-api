@@ -1,7 +1,10 @@
 import abc
 import json
+import logging
 import subprocess
 import typing
+
+logger = logging.getLogger(__name__)
 
 
 # Inherit from `str` instead of `collections.UserString` for immutability
@@ -175,3 +178,4 @@ def set_(value: Status, *, app=False):
     if app:
         command.append("--application")
     subprocess.run(command, check=True)
+    logger.debug(f'Set {"app" if app else "unit"}_status = {repr(value)}')

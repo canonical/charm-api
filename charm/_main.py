@@ -1,9 +1,12 @@
 import collections.abc
 import json
+import logging
 import os
 import subprocess
 import types
 import typing
+
+logger = logging.getLogger(__name__)
 
 
 class Unit(str):
@@ -126,6 +129,7 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, str]):
             # `self._unit_or_app` is app
             command.append("--app")
         subprocess.run(command, input=json.dumps({key: value}), check=True, text=True)
+        logger.debug(f"Set {repr(self)}[{repr(key)}] = {repr(value)}")
 
     def __delitem__(self, key):
         self.__setitem__(key, None)
@@ -421,15 +425,18 @@ class ActionEvent(Event):
         for key, value_ in self._flatten(value).items():
             command.append(f"{key}={value_}")
         subprocess.run(command, check=True)
+        logger.debug(f"Set {repr(self)}.result = {repr(value)}")
 
     result = property(fset=_set_result)
 
-    @staticmethod
-    def fail(message: str = None, /):
+    def fail(self, message: str = None, /):
         command = ["action-fail"]
         if message is not None:
             command.append(message)
         subprocess.run(command, check=True)
+        logger.debug(
+            f'Called {repr(self)}.fail({repr(message) if message is not None else ""})'
+        )
 
 
 class RelationEvent(Event):
