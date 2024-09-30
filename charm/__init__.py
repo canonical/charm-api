@@ -2,6 +2,7 @@ import sys as _sys
 import typing as _typing
 
 from . import _main, _status
+from ._logging import set_up_logging
 from ._main import (
     ActionEvent,
     ConfigChangedEvent,
