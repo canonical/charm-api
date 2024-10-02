@@ -135,6 +135,28 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, str]):
         self.__setitem__(key, None)
 
 
+class _RelationSubset(typing.Mapping[str, typing.Mapping[str, str]]):
+    """Lazy loaded read-only mapping for subset of a `Relation`"""
+
+    def __init__(self, *, relation: "Relation", keys: typing.List[str]):
+        self._relation = relation
+        self._keys = keys
+
+    def __repr__(self):
+        return f"{type(self).__name__}(relation={repr(self._relation)}, keys={repr(self._keys)})"
+
+    def __getitem__(self, key):
+        if key not in self._keys:
+            raise KeyError(key)
+        return self._relation[key]
+
+    def __iter__(self):
+        return iter(self._keys)
+
+    def __len__(self):
+        return len(self._keys)
+
+
 class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
     @property
     def _other_units(self):
@@ -219,9 +241,7 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
     @property
     def other_units(self) -> typing.Mapping[Unit, typing.Mapping[str, str]]:
         # TODO docstring: for peer, this is other units. for subordinate, this is only 1 principal unit
-        return types.MappingProxyType(
-            {unit_: self[unit_] for unit_ in self._other_units}
-        )
+        return _RelationSubset(relation=self, keys=self._other_units)
 
     @property
     def other_app(self) -> typing.Mapping[str, str]:
