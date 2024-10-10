@@ -11,6 +11,7 @@ from ._main import (
     InstallEvent,
     LeaderElectedEvent,
     LeaderSettingsChangedEvent,
+    PeerRelation,
     PostSeriesUpgradeEvent,
     PreSeriesUpgradeEvent,
     Relation,

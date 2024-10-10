@@ -293,6 +293,21 @@ class Endpoint(typing.Collection[Relation]):
             return relation
 
 
+class PeerRelation(Relation):
+    @classmethod
+    def from_endpoint(
+        cls, endpoint: typing.Union[str, Endpoint], /
+    ) -> typing.Optional["PeerRelation"]:
+        if isinstance(endpoint, str):
+            endpoint = Endpoint(endpoint)
+        if relation := endpoint.relation:
+            return cls(relation.id)
+
+    @property
+    def all_units(self) -> typing.Mapping[Unit, typing.Mapping[str, str]]:
+        return _RelationSubset(relation=self, keys=[unit(), *self._other_units])
+
+
 # Do not expose this class publicly (i.e. in top-level __init__.py)
 class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
     # TODO: add support for secrets
