@@ -250,6 +250,9 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
 
 
 class Endpoint(typing.Collection[Relation]):
+    # Convenience for subclasses
+    _Relation: typing.Type[Relation] = Relation
+
     @property
     def _relations(self):
         # Example: ["database:5", "database:6"]
@@ -262,7 +265,7 @@ class Endpoint(typing.Collection[Relation]):
             ).stdout
         )
         ids = (int(id_.removeprefix(f"{self._name}:")) for id_ in result)
-        return [Relation(id_) for id_ in ids]
+        return [self._Relation(id_) for id_ in ids]
 
     def __init__(self, name: str, /):
         self._name = name
