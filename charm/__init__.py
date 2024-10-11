@@ -52,6 +52,10 @@ class _ThisModule(_sys.modules[__name__].__class__):
         return _main.app()
 
     @property
+    def model(self):
+        return _main.model()
+
+    @property
     def unit_status(self):
         return _status.get()
 
@@ -85,6 +89,7 @@ unit: Unit
 """example docstring"""
 
 app: str
+model: str
 # TODO: document that if you set + get unit status you won't see unit status you set (not the case for app status)
 unit_status: _typing.Optional[Status]
 app_status: _typing.Optional[Status]

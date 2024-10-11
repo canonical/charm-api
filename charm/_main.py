@@ -534,6 +534,10 @@ def app():
     return unit().app
 
 
+def model():
+    return os.environ["JUJU_MODEL_NAME"]
+
+
 def is_leader() -> bool:
     return json.loads(
         subprocess.run(
