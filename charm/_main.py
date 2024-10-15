@@ -212,6 +212,8 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
         return f"{type(self).__name__}({self.id})"
 
     def __getitem__(self, key):
+        if key not in (app(), self._other_app, unit(), *self._other_units):
+            raise KeyError(key)
         if key == unit() or (key == app() and is_leader()):
             return _WriteableDatabag(relation_id=self.id, unit_or_app=key)
         return _Databag(relation_id=self.id, unit_or_app=key)
