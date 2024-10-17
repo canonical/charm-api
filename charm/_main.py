@@ -29,44 +29,44 @@ class Unit(str):
     def __lt__(self, other):
         if not isinstance(other, Unit):
             raise TypeError(
-                f"'<' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'<' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self.app != other.app:
             raise ValueError(
-                f'Unable to compare units with different apps: "{self.app}" and "{other.app}" ("{self}" and "{other}")'
+                f"Unable to compare units with different apps: {repr(self.app)} and {repr(other.app)} ({repr(self)} and {repr(other)})"
             )
         return self.number < other.number
 
     def __le__(self, other):
         if not isinstance(other, Unit):
             raise TypeError(
-                f"'<=' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'<=' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}'"
             )
         if self.app != other.app:
             raise ValueError(
-                f'Unable to compare units with different apps: "{self.app}" and "{other.app}" ("{self}" and "{other}")'
+                f"Unable to compare units with different apps: {repr(self.app)} and {repr(other.app)} ({repr(self)} and {repr(other)})"
             )
         return self.number <= other.number
 
     def __gt__(self, other):
         if not isinstance(other, Unit):
             raise TypeError(
-                f"'>' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'>' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self.app != other.app:
             raise ValueError(
-                f'Unable to compare units with different apps: "{self.app}" and "{other.app}" ("{self}" and "{other}")'
+                f"Unable to compare units with different apps: {repr(self.app)} and {repr(other.app)} ({repr(self)} and {repr(other)})"
             )
         return self.number > other.number
 
     def __ge__(self, other):
         if not isinstance(other, Unit):
             raise TypeError(
-                f"'>=' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'>=' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self.app != other.app:
             raise ValueError(
-                f'Unable to compare units with different apps: "{self.app}" and "{other.app}" ("{self}" and "{other}")'
+                f"Unable to compare units with different apps: {repr(self.app)} and {repr(other.app)} ({repr(self)} and {repr(other)})"
             )
         return self.number >= other.number
 
@@ -438,12 +438,12 @@ class ActionEvent(Event):
         for key, value in old.items():
             if not isinstance(key, str):
                 raise TypeError(
-                    f"expected key with type 'str', got '{type(key).__name__}': {repr(key)}"
+                    f"expected key with type 'str', got {repr(type(key).__name__)}: {repr(key)}"
                 )
             for invalid_character in (".", "="):
                 if invalid_character in key:
                     raise ValueError(
-                        f'"{invalid_character}" character not allowed in key: "{key}"'
+                        f"{repr(invalid_character)} character not allowed in key: {repr(key)}"
                     )
             if prefix:
                 key = f"{prefix}.{key}"
@@ -453,7 +453,7 @@ class ActionEvent(Event):
                 new[key] = value
             else:
                 raise TypeError(
-                    f"expected value with type 'str' or 'collections.abc.Mapping', got '{type(value).__name__}': {repr(value)}"
+                    f"expected value with type 'str' or 'collections.abc.Mapping', got {repr(type(value).__name__)}: {repr(value)}"
                 )
         return new
 

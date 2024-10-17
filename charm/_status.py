@@ -34,7 +34,7 @@ class Status(str, abc.ABC):
     def __lt__(self, other):
         if not isinstance(other, Status):
             raise TypeError(
-                f"'<' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'<' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self._PRIORITY == other._PRIORITY:
             return super().__lt__(other)
@@ -45,7 +45,7 @@ class Status(str, abc.ABC):
     def __le__(self, other):
         if not isinstance(other, Status):
             raise TypeError(
-                f"'<=' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'<=' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self._PRIORITY == other._PRIORITY:
             return super().__le__(other)
@@ -56,7 +56,7 @@ class Status(str, abc.ABC):
     def __gt__(self, other):
         if not isinstance(other, Status):
             raise TypeError(
-                f"'>' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'>' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self._PRIORITY == other._PRIORITY:
             return super().__gt__(other)
@@ -67,7 +67,7 @@ class Status(str, abc.ABC):
     def __ge__(self, other):
         if not isinstance(other, Status):
             raise TypeError(
-                f"'>=' not supported between instances of '{type(self)}' and '{type(other)}'"
+                f"'>=' not supported between instances of {repr(type(self).__name__)} and {repr(type(other).__name__)}"
             )
         if self._PRIORITY == other._PRIORITY:
             return super().__ge__(other)
