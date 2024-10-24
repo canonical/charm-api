@@ -235,7 +235,9 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
     # TODO: add setter for my_unit (but don't override databag keys that Juju sets automatically)
 
     @property
-    def my_app(self) -> typing.Mapping[str, str]:
+    def my_app(
+        self,
+    ) -> typing.Union[typing.Mapping[str, str], typing.MutableMapping[str, str]]:
         return self[app()]
 
     # TODO: add setter for my_app
