@@ -182,15 +182,16 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
         )
 
     @property
-    def _units_and_apps(self) -> typing.Set[str]:
-        units_and_apps = {unit()}  # This unit
+    def _units_and_apps(self) -> typing.Tuple[str, ...]:
+        units_and_apps = [unit()]  # This unit
         if is_leader():
             # In a peer relation, this unit's app will be added later regardless of `is_leader()`
-            units_and_apps.add(app())  # This unit's app
-        units_and_apps.update(self._other_units)
+            units_and_apps.append(app())  # This unit's app
+        units_and_apps.extend(self._other_units)
         # In a peer relation, `self._other_app` is this unit's app
-        units_and_apps.add(self._other_app)
-        return units_and_apps
+        units_and_apps.append(self._other_app)
+        # Remove duplicates while preserving order
+        return tuple(dict.fromkeys(units_and_apps))
 
     def __init__(self, id_: int, /):
         self._id = id_
