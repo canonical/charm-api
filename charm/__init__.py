@@ -28,13 +28,7 @@ from ._main import (
     UpdateStatusEvent,
     UpgradeCharmEvent,
 )
-from ._status import (
-    ActiveStatus,
-    BlockedStatus,
-    MaintenanceStatus,
-    Status,
-    WaitingStatus,
-)
+from ._status import ActiveStatus, BlockedStatus, MaintenanceStatus, Status, WaitingStatus
 
 
 class _ThisModule(_sys.modules[__name__].__class__):

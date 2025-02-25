@@ -160,9 +160,7 @@ def get(*, app=False) -> typing.Optional[Status]:
     command = ["status-get", "--format", "json", "--include-data"]
     if app:
         command.append("--application")
-    result = json.loads(
-        subprocess.run(command, capture_output=True, check=True, text=True).stdout
-    )
+    result = json.loads(subprocess.run(command, capture_output=True, check=True, text=True).stdout)
     if app:
         result = result["application-status"]
     status_types: typing.Dict[str, typing.Type[Status]] = {
@@ -178,4 +176,4 @@ def set_(value: Status, /, *, app=False):
     if app:
         command.append("--application")
     subprocess.run(command, check=True)
-    logger.debug(f'Set {"app" if app else "unit"}_status = {repr(value)}')
+    logger.debug(f"Set {'app' if app else 'unit'}_status = {repr(value)}")

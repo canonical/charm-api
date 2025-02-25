@@ -177,14 +177,7 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
         # TODO: make public and rename to other_app_name?
         return json.loads(
             subprocess.run(
-                [
-                    "relation-list",
-                    "--format",
-                    "json",
-                    "--relation",
-                    str(self.id),
-                    "--app",
-                ],
+                ["relation-list", "--format", "json", "--relation", str(self.id), "--app"],
                 capture_output=True,
                 check=True,
                 text=True,
@@ -363,10 +356,7 @@ class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
     def __getitem__(self, key: str):
         result = json.loads(
             subprocess.run(
-                ["config-get", "--format", "json", key],
-                capture_output=True,
-                check=True,
-                text=True,
+                ["config-get", "--format", "json", key], capture_output=True, check=True, text=True
             ).stdout
         )
         if result is None:
@@ -376,10 +366,7 @@ class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
     def __iter__(self):
         result: typing.Dict[str, typing.Union[str, int, float, bool]] = json.loads(
             subprocess.run(
-                ["config-get", "--format", "json"],
-                capture_output=True,
-                check=True,
-                text=True,
+                ["config-get", "--format", "json"], capture_output=True, check=True, text=True
             ).stdout
         )
         return iter(result.keys())
@@ -387,10 +374,7 @@ class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
     def __len__(self):
         result: typing.Dict[str, typing.Union[str, int, float, bool]] = json.loads(
             subprocess.run(
-                ["config-get", "--format", "json"],
-                capture_output=True,
-                check=True,
-                text=True,
+                ["config-get", "--format", "json"], capture_output=True, check=True, text=True
             ).stdout
         )
         return len(result)
@@ -459,10 +443,7 @@ class ActionEvent(Event):
         return types.MappingProxyType(
             json.loads(
                 subprocess.run(
-                    ["action-get", "--format", "json"],
-                    capture_output=True,
-                    check=True,
-                    text=True,
+                    ["action-get", "--format", "json"], capture_output=True, check=True, text=True
                 ).stdout
             )
         )
@@ -472,9 +453,7 @@ class ActionEvent(Event):
         subprocess.run(["action-log", message], check=True)
 
     @classmethod
-    def _flatten(
-        cls, old: _ActionResult, /, *, prefix: str = ""
-    ) -> typing.Mapping[str, str]:
+    def _flatten(cls, old: _ActionResult, /, *, prefix: str = "") -> typing.Mapping[str, str]:
         new = {}
         for key, value in old.items():
             if not isinstance(key, str):
@@ -515,9 +494,7 @@ class ActionEvent(Event):
         if message is not None:
             command.append(message)
         subprocess.run(command, check=True)
-        logger.debug(
-            f'Called {repr(self)}.fail({repr(message) if message is not None else ""})'
-        )
+        logger.debug(f"Called {repr(self)}.fail({repr(message) if message is not None else ''})")
 
 
 class RelationEvent(Event):
@@ -526,7 +503,7 @@ class RelationEvent(Event):
         # Example: "database:5"
         id_ = os.environ["JUJU_RELATION_ID"]
         # Example: 5
-        id_ = int(id_.removeprefix(f'{os.environ["JUJU_RELATION"]}:'))
+        id_ = int(id_.removeprefix(f"{os.environ['JUJU_RELATION']}:"))
         return Relation(id_)
 
     @property
@@ -584,10 +561,7 @@ def model():
 def is_leader() -> bool:
     return json.loads(
         subprocess.run(
-            ["is-leader", "--format", "json"],
-            capture_output=True,
-            check=True,
-            text=True,
+            ["is-leader", "--format", "json"], capture_output=True, check=True, text=True
         ).stdout
     )
 

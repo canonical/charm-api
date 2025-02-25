@@ -8,9 +8,7 @@ class _Handler(logging.Handler):
     def emit(self, record):
         try:
             message = self.format(record)
-            subprocess.run(
-                ["juju-log", "--log-level", record.levelname, message], check=True
-            )
+            subprocess.run(["juju-log", "--log-level", record.levelname, message], check=True)
         except Exception:
             self.handleError(record)
 
@@ -26,9 +24,7 @@ def set_up_logging() -> None:
     logger.addHandler(handler_)
 
     def except_hook(type_, value, traceback):
-        logger.critical(
-            "Uncaught exception in charm code", exc_info=(type_, value, traceback)
-        )
+        logger.critical("Uncaught exception in charm code", exc_info=(type_, value, traceback))
 
         if os.environ.get("JUJU_ACTION_NAME"):
             # Print to stderr (so that exception is displayed in output of `juju run`)
