@@ -71,7 +71,7 @@ class _ThisModule(_sys.modules[__name__].__class__):
 
     @property
     def config(self):
-        return _main.Config()
+        return _main._Config()
 
     @property
     def event(self):

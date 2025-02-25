@@ -345,8 +345,7 @@ class PeerRelation(Relation):
         return super().other_app
 
 
-# Do not expose this class publicly (i.e. in top-level __init__.py)
-class Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
+class _Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
     # TODO: add support for secrets
     def __repr__(self):
         return f"{type(self).__name__}()"
