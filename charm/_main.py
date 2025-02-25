@@ -212,8 +212,11 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
         return f"{type(self).__name__}({self.id})"
 
     def __getitem__(self, key):
-        if key not in (app(), self._other_app, unit(), *self._other_units):
-            raise KeyError(key)
+        if key not in self._units_and_apps:
+            if key == app():
+                raise KeyError(f"{repr(key)} (this unit is not leader)")
+            else:
+                raise KeyError(key)
         if key == unit() or (key == app() and is_leader()):
             return _WriteableDatabag(relation_id=self.id, unit_or_app=key)
         return _Databag(relation_id=self.id, unit_or_app=key)
@@ -230,26 +233,43 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
 
     @property
     def my_unit(self) -> typing.MutableMapping[str, str]:
+        """This unit's data"""
         return self[unit()]
 
     # TODO: add setter for my_unit (but don't override databag keys that Juju sets automatically)
 
     @property
-    def my_app(
-        self,
-    ) -> typing.Union[typing.Mapping[str, str], typing.MutableMapping[str, str]]:
-        return self[app()]
+    def my_app_rw(self) -> typing.Optional[typing.MutableMapping[str, str]]:
+        """This app's data (read-write)
 
-    # TODO: add setter for my_app
+        `None` if this unit is not leader
+        """
+        try:
+            data = self[app()]
+        except KeyError:
+            return
+        if isinstance(data, collections.abc.MutableMapping):
+            return data
+
+    # TODO: add setter for my_app_rw
 
     @property
     def other_units(self) -> typing.Mapping[Unit, typing.Mapping[str, str]]:
-        # TODO docstring: for peer, this is other units. for subordinate, this is only 1 principal unit
+        """Other units' data
+
+        In a non-peer relation, this is the data of the other app's units
+        In a peer relation, this is the data of this app's units, excluding this unit
+
+        In a subordinate (non-peer) relation, this data only includes the other app's unit that is
+        deployed to the same machine as this unit
+        Note: subordinate charms can have non-subordinate relations and principal charms can have
+        subordinate relations
+        """
         return _RelationSubset(relation=self, keys=self._other_units)
 
     @property
     def other_app(self) -> typing.Mapping[str, str]:
-        # TODO docstring: for peer, this is same as my_app
+        """Other app's data"""
         return self[self._other_app]
 
 
@@ -312,7 +332,26 @@ class PeerRelation(Relation):
 
     @property
     def all_units(self) -> typing.Mapping[Unit, typing.Mapping[str, str]]:
+        """All units' data
+
+        Includes this unit's data
+        """
         return _RelationSubset(relation=self, keys=[unit(), *self._other_units])
+
+    @property
+    def my_app_ro(self) -> typing.Mapping[str, str]:
+        """This app's data (read-only)"""
+        return self.other_app
+
+    @property
+    def other_app(self) -> typing.Mapping[str, str]:
+        """This app's data
+
+        In a peer relation, the "other" app is this unit's app
+
+        Same as `my_app_ro`
+        """
+        return super().other_app
 
 
 # Do not expose this class publicly (i.e. in top-level __init__.py)
