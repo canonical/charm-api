@@ -504,7 +504,12 @@ class RelationEvent(Event):
         id_ = os.environ["JUJU_RELATION_ID"]
         # Example: 5
         id_ = int(id_.removeprefix(f"{os.environ['JUJU_RELATION']}:"))
-        return Relation(id_)
+        relation = Relation(id_)
+        # Use `relation._other_app` instead of `os.environ["JUJU_REMOTE_APP"]` because of
+        # https://bugs.launchpad.net/juju/+bug/1960934
+        if relation._other_app == app():
+            return PeerRelation(id_)
+        return relation
 
     @property
     def endpoint(self) -> Endpoint:
