@@ -173,7 +173,7 @@ def get(*, app=False) -> typing.Optional[Status]:
         return status_type(result["message"])
 
 
-def set_(value: Status, *, app=False):
+def set_(value: Status, /, *, app=False):
     command = ["status-set", value._HOOK_TOOL_CODE, str(value)]
     if app:
         command.append("--application")

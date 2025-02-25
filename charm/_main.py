@@ -434,7 +434,7 @@ class ActionEvent(Event):
 
     @classmethod
     def _flatten(
-        cls, old: _ActionResult, *, prefix: str = ""
+        cls, old: _ActionResult, /, *, prefix: str = ""
     ) -> typing.Mapping[str, str]:
         new = {}
         for key, value in old.items():
