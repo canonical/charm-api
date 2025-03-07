@@ -25,9 +25,6 @@ class Status(str, abc.ABC):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __hash__(self):
-        return hash((type(self), super().__hash__()))
-
     def __repr__(self):
         return f"{type(self).__name__}({repr(str(self))})"
 
