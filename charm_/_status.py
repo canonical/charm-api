@@ -9,6 +9,11 @@ logger = logging.getLogger(__name__)
 
 # Inherit from `str` instead of `collections.UserString` for immutability
 class Status(str, abc.ABC):
+    """Unit or app status
+
+    https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/status/
+    """
+
     @property
     @abc.abstractmethod
     def _PRIORITY(self) -> int:

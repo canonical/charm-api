@@ -78,17 +78,52 @@ class _ThisModule(_sys.modules[__name__].__class__):
         return _main.event()
 
 
-# TODO: add docstrings
 unit: Unit
-"""example docstring"""
+"""The unit that this charm code is running on
 
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/
+"""
 app: str
+"""This unit's app
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/application/
+"""
 model: str
+"""This unit's model
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/model/
+"""
 # TODO: document that if you set + get unit status you won't see unit status you set (not the case for app status)
 unit_status: _typing.Optional[Status]
+"""This unit's status
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/status/
+"""
 app_status: _typing.Optional[Status]
+"""This app's status
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/status/
+"""
 is_leader: bool
+"""Whether this unit is the app's leader
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/#leader-unit
+"""
 config: _typing.Mapping[str, _typing.Union[str, int, float, bool]]
+"""User-specified configuration
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/juju-cli/list-of-juju-cli-commands/config/
+"""
 event: Event
+"""The current Juju event
+
+Also referred to as a "hook"
+
+When the Juju agent on the unit receives an event from the Juju controller, it executes the charm
+code. The charm code's process must exit before another event can be processed. The charm code is
+re-executed for each Juju event.
+
+https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/
+"""
 
 _sys.modules[__name__].__class__ = _ThisModule

@@ -10,13 +10,20 @@ logger = logging.getLogger(__name__)
 
 
 class Unit(str):
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/"""
+
     @property
     def app(self):
+        """The unit's app
+
+        https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/application/
+        """
         app_, _ = self.split("/")
         return app_
 
     @property
     def number(self):
+        """The unit's number"""
         _, number_ = self.split("/")
         return int(number_)
 
@@ -155,6 +162,8 @@ class _RelationSubset(typing.Mapping[str, typing.Mapping[str, str]]):
 
 
 class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/relation/"""
+
     @property
     def _other_units(self):
         return [
@@ -220,6 +229,14 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
 
     @property
     def id(self):
+        """The relation's ID
+
+        This ID is unique within a model
+
+        For cross-model relations, the same relation may have a different ID for each model
+
+        https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/relation/#relation-identification
+        """
         return self._id
 
     @property
@@ -265,6 +282,8 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
 
 
 class Endpoint(typing.Collection[Relation]):
+    """Relation endpoint"""
+
     # Convenience for subclasses
     _Relation: typing.Type[Relation] = Relation
 
@@ -302,7 +321,13 @@ class Endpoint(typing.Collection[Relation]):
 
     @property
     def relation(self) -> typing.Optional[Relation]:
-        # TODO docstring: raises error if more than one
+        """Assume 0 or 1 relations exist on the endpoint & return the relation if it exists
+
+        Should only be used if `limit: 1` is present for the endpoint in metadata.yaml or
+        charmcraft.yaml
+
+        Raises `ValueError` if more than 1 relation exists on the endpoint
+        """
         if len(self) > 1:
             raise ValueError(
                 f"{len(self)} relations on {repr(self)}. `Endpoint.relation` expects 0 or 1 relations"
@@ -312,10 +337,16 @@ class Endpoint(typing.Collection[Relation]):
 
 
 class PeerRelation(Relation):
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/relation/#peer"""
+
     @classmethod
     def from_endpoint(
         cls, endpoint: typing.Union[str, Endpoint], /
     ) -> typing.Optional["PeerRelation"]:
+        """Get the peer relation for the endpoint, if the relation exists
+
+        For a peer endpoint, there is a maximum of 1 relation
+        """
         if isinstance(endpoint, str):
             endpoint = Endpoint(endpoint)
         if relation := endpoint.relation:
@@ -379,58 +410,67 @@ class _Config(typing.Mapping[str, typing.Union[str, int, float, bool]]):
 
 # TODO: add pebble, secret, and storage events
 class Event:
+    """Juju event
+
+    Also referred to as a "hook"
+
+    https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/
+    """
+
     def __repr__(self):
         return f"{type(self).__name__}()"
 
 
 class ConfigChangedEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#config-changed"""
 
 
 class InstallEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#install"""
 
 
 class LeaderElectedEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#leader-elected"""
 
 
 class LeaderSettingsChangedEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#leader-settings-changed"""
 
 
 class PostSeriesUpgradeEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#post-series-upgrade"""
 
 
 class PreSeriesUpgradeEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#pre-series-upgrade"""
 
 
 class RemoveEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#remove"""
 
 
 class StartEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#start"""
 
 
 class StopEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#stop"""
 
 
 class UpdateStatusEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#update-status"""
 
 
 class UpgradeCharmEvent(Event):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#upgrade-charm"""
 
 
 _ActionResult = typing.Mapping[str, typing.Union[str, "_ActionResult"]]
 
 
 class ActionEvent(Event):
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#action-action"""
+
     @property
     def action(self) -> str:
         return os.environ["JUJU_ACTION_NAME"]
@@ -514,11 +554,11 @@ class RelationEvent(Event):
 
 
 class RelationBrokenEvent(RelationEvent):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-broken"""
 
 
 class RelationCreatedEvent(RelationEvent):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-created"""
 
 
 class _RelationUnitEvent(RelationEvent):
@@ -528,17 +568,19 @@ class _RelationUnitEvent(RelationEvent):
 
 
 class RelationChangedEvent(_RelationUnitEvent):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed"""
 
 
 class RelationDepartedEvent(_RelationUnitEvent):
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-departed"""
+
     @property
     def departing_unit(self) -> Unit:
         return Unit(os.environ["JUJU_DEPARTING_UNIT"])
 
 
 class RelationJoinedEvent(_RelationUnitEvent):
-    pass
+    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-joined"""
 
 
 class _UnknownEvent(Event):
