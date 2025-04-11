@@ -590,6 +590,12 @@ class _UnknownEvent(Event):
     """
 
 
+def set_app_workload_version(version: str, /) -> None:
+    """Set the workload version displayed in `juju status` for this app"""
+    subprocess.run(["application-version-set", version], check=True)
+    logger.debug(f"Called set_app_workload_version({repr(version)})")
+
+
 def unit():
     return Unit(os.environ["JUJU_UNIT_NAME"])
 

@@ -27,6 +27,7 @@ from ._main import (
     Unit,
     UpdateStatusEvent,
     UpgradeCharmEvent,
+    set_app_workload_version,
 )
 from ._status import ActiveStatus, BlockedStatus, MaintenanceStatus, Status, WaitingStatus
 
