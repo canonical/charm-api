@@ -6,7 +6,8 @@ import subprocess
 import types
 import typing
 
-logger = logging.getLogger(__name__)
+# Use package name instead of module name
+logger = logging.getLogger(__name__.rsplit(".", maxsplit=1)[0])
 
 
 class Unit(str):

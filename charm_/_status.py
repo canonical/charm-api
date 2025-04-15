@@ -4,7 +4,8 @@ import logging
 import subprocess
 import typing
 
-logger = logging.getLogger(__name__)
+# Use package name instead of module name
+logger = logging.getLogger(__name__.rsplit(".", maxsplit=1)[0])
 
 
 # Inherit from `str` instead of `collections.UserString` for immutability
