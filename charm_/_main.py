@@ -10,6 +10,13 @@ import typing
 logger = logging.getLogger(__name__.rsplit(".", maxsplit=1)[0])
 
 
+def _removeprefix(text: str, /, *, prefix: str) -> str:
+    """python 3.8 compatible equivalent to `str.removeprefix()`"""
+    if text.startswith(prefix):
+        return text[len(prefix) :]
+    return text
+
+
 class Unit(str):
     """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/"""
 
@@ -291,7 +298,7 @@ class Endpoint(typing.Collection[Relation]):
     @property
     def _relations(self):
         # Example: ["database:5", "database:6"]
-        result: list[str] = json.loads(
+        result: typing.List[str] = json.loads(
             subprocess.run(
                 ["relation-ids", "--format", "json", self._name],
                 capture_output=True,
@@ -299,7 +306,7 @@ class Endpoint(typing.Collection[Relation]):
                 text=True,
             ).stdout
         )
-        ids = (int(id_.removeprefix(f"{self._name}:")) for id_ in result)
+        ids = (int(_removeprefix(id_, prefix=f"{self._name}:")) for id_ in result)
         return [self._Relation(id_) for id_ in ids]
 
     def __init__(self, name: str, /):
@@ -541,7 +548,7 @@ class RelationEvent(Event):
         # Example: "database:5"
         id_ = os.environ["JUJU_RELATION_ID"]
         # Example: 5
-        id_ = int(id_.removeprefix(f"{os.environ['JUJU_RELATION']}:"))
+        id_ = int(_removeprefix(id_, prefix=f"{os.environ['JUJU_RELATION']}:"))
         relation = Relation(id_)
         # Use `relation._other_app` instead of `os.environ["JUJU_REMOTE_APP"]` because of
         # https://bugs.launchpad.net/juju/+bug/1960934
