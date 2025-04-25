@@ -263,9 +263,10 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
         try:
             data = self[app()]
         except KeyError:
-            return
+            return None
         if isinstance(data, collections.abc.MutableMapping):
             return data
+        return None
 
     # TODO: add setter for my_app_rw
 
@@ -342,6 +343,7 @@ class Endpoint(typing.Collection[Relation]):
             )
         for relation in self:
             return relation
+        return None
 
 
 class PeerRelation(Relation):
@@ -359,6 +361,7 @@ class PeerRelation(Relation):
             endpoint = Endpoint(endpoint)
         if relation := endpoint.relation:
             return cls(relation.id)
+        return None
 
     @property
     def all_units(self) -> typing.Mapping[Unit, typing.Mapping[str, str]]:
