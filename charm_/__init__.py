@@ -82,38 +82,38 @@ class _ThisModule(_sys.modules[__name__].__class__):
 unit: Unit
 """The unit that this charm code is running on
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/
+https://documentation.ubuntu.com/juju/latest/reference/unit/
 """
 app: str
 """This unit's app
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/application/
+https://documentation.ubuntu.com/juju/latest/reference/application/
 """
 model: str
 """This unit's model
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/model/
+https://documentation.ubuntu.com/juju/latest/reference/model/
 """
 # TODO: document that if you set + get unit status you won't see unit status you set (not the case for app status)
 unit_status: _typing.Optional[Status]
 """This unit's status
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/status/
+https://documentation.ubuntu.com/juju/latest/reference/status/
 """
 app_status: _typing.Optional[Status]
 """This app's status
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/status/
+https://documentation.ubuntu.com/juju/latest/reference/status/
 """
 is_leader: bool
 """Whether this unit is the app's leader
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/#leader-unit
+https://documentation.ubuntu.com/juju/latest/reference/unit/#leader-unit
 """
 config: _typing.Mapping[str, _typing.Union[str, int, float, bool]]
 """User-specified configuration
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/juju-cli/list-of-juju-cli-commands/config/
+https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/config/
 """
 event: Event
 """The current Juju event
@@ -124,7 +124,7 @@ When the Juju agent on the unit receives an event from the Juju controller, it e
 code. The charm code's process must exit before another event can be processed. The charm code is
 re-executed for each Juju event.
 
-https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/
+https://documentation.ubuntu.com/juju/latest/reference/hook/
 """
 
 _sys.modules[__name__].__class__ = _ThisModule

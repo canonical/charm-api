@@ -18,13 +18,13 @@ def _removeprefix(text: str, /, *, prefix: str) -> str:
 
 
 class Unit(str):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/unit/"""
+    """https://documentation.ubuntu.com/juju/latest/reference/unit/"""
 
     @property
     def app(self):
         """The unit's app
 
-        https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/application/
+        https://documentation.ubuntu.com/juju/latest/reference/application/
         """
         app_, _ = self.split("/")
         return app_
@@ -170,7 +170,7 @@ class _RelationSubset(typing.Mapping[str, typing.Mapping[str, str]]):
 
 
 class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/relation/"""
+    """https://documentation.ubuntu.com/juju/latest/reference/relation/"""
 
     @property
     def _other_units(self):
@@ -243,7 +243,7 @@ class Relation(typing.Mapping[str, typing.Mapping[str, str]]):
 
         For cross-model relations, the same relation may have a different ID for each model
 
-        https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/relation/#relation-identification
+        https://documentation.ubuntu.com/juju/latest/reference/relation/#relation-identification
         """
         return self._id
 
@@ -345,7 +345,7 @@ class Endpoint(typing.Collection[Relation]):
 
 
 class PeerRelation(Relation):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/relation/#peer"""
+    """https://documentation.ubuntu.com/juju/latest/reference/relation/#peer"""
 
     @classmethod
     def from_endpoint(
@@ -422,7 +422,7 @@ class Event:
 
     Also referred to as a "hook"
 
-    https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/
+    https://documentation.ubuntu.com/juju/latest/reference/hook/
     """
 
     def __repr__(self):
@@ -430,54 +430,54 @@ class Event:
 
 
 class ConfigChangedEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#config-changed"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#config-changed"""
 
 
 class InstallEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#install"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#install"""
 
 
 class LeaderElectedEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#leader-elected"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#leader-elected"""
 
 
 class LeaderSettingsChangedEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#leader-settings-changed"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#leader-settings-changed"""
 
 
 class PostSeriesUpgradeEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#post-series-upgrade"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#post-series-upgrade"""
 
 
 class PreSeriesUpgradeEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#pre-series-upgrade"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#pre-series-upgrade"""
 
 
 class RemoveEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#remove"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#remove"""
 
 
 class StartEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#start"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#start"""
 
 
 class StopEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#stop"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#stop"""
 
 
 class UpdateStatusEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#update-status"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#update-status"""
 
 
 class UpgradeCharmEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#upgrade-charm"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#upgrade-charm"""
 
 
 _ActionResult = typing.Mapping[str, typing.Union[str, "_ActionResult"]]
 
 
 class ActionEvent(Event):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#action-action"""
+    """https://documentation.ubuntu.com/juju/latest/reference/action/#action-execution"""
 
     @property
     def action(self) -> str:
@@ -562,11 +562,11 @@ class RelationEvent(Event):
 
 
 class RelationBrokenEvent(RelationEvent):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-broken"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#endpoint-relation-broken"""
 
 
 class RelationCreatedEvent(RelationEvent):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-created"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#endpoint-relation-created"""
 
 
 class _RelationUnitEvent(RelationEvent):
@@ -576,11 +576,11 @@ class _RelationUnitEvent(RelationEvent):
 
 
 class RelationChangedEvent(_RelationUnitEvent):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#endpoint-relation-changed"""
 
 
 class RelationDepartedEvent(_RelationUnitEvent):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-departed"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#endpoint-relation-departed"""
 
     @property
     def departing_unit(self) -> Unit:
@@ -588,7 +588,7 @@ class RelationDepartedEvent(_RelationUnitEvent):
 
 
 class RelationJoinedEvent(_RelationUnitEvent):
-    """https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-joined"""
+    """https://documentation.ubuntu.com/juju/latest/reference/hook/#endpoint-relation-joined"""
 
 
 class _UnknownEvent(Event):

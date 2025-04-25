@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__.rsplit(".", maxsplit=1)[0])
 class Status(str, abc.ABC):
     """Unit or app status
 
-    https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/status/
+    https://documentation.ubuntu.com/juju/latest/reference/status/
     """
 
     @property
