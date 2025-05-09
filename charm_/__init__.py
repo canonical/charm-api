@@ -36,6 +36,7 @@ class _ThisModule(_sys.modules[__name__].__class__):
     """Contains properties for this module
 
     https://stackoverflow.com/a/34829743
+    https://docs.python.org/3/reference/datamodel.html#customizing-module-attribute-access
     """
 
     @property
