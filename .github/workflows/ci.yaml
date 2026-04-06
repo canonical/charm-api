@@ -6,6 +6,8 @@ concurrency:
 
 on:
   pull_request:
+  # Triggered on push by .github/workflows/release.yaml
+  workflow_call:
 
 jobs:
   lint-workflows:
